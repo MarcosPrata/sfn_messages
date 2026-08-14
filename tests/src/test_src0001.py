@@ -9,6 +9,8 @@ from sfn_messages.src.src0001 import SRC0001, SRC0001E, SRC0001R1
 from sfn_messages.src.types import ProductPermissionIndicator, ProtectionType
 from tests.conftest import extract_missing_fields, normalize_xml
 
+PRODUCT_PERMISSIONS_SIZE = 2
+
 
 def make_valid_src0001_params() -> dict[str, Any]:
     return {
@@ -226,9 +228,44 @@ def test_src0001r1_from_xml() -> None:
     """
 
     src0001r1 = SRC0001R1.from_xml(xml)
-    assert len(src0001r1.product_permissions) == 2
+    assert len(src0001r1.product_permissions) == PRODUCT_PERMISSIONS_SIZE
     assert src0001r1.product_permissions[0].product_permission_indicator == ProductPermissionIndicator.NOT_ALLOWED
     assert src0001r1.product_permissions[1].protection_type == ProtectionType.OWNERSHIP_CHANGE
+
+
+def test_src0001r1_product_permissions_defaults_to_empty_list() -> None:
+    params = make_valid_src0001r1_params()
+    del params['product_permissions']
+
+    src0001r1 = SRC0001R1.model_validate(params)
+
+    assert src0001r1.product_permissions == []
+
+
+def test_src0001r1_from_xml_without_product_permission_groups() -> None:
+    xml = """<?xml version="1.0"?>
+    <DOC xmlns="http://www.bcb.gov.br/MES/SRC0001.xsd">
+        <BCMSG>
+            <IdentdEmissor>00038166</IdentdEmissor>
+            <IdentdDestinatario>12345678</IdentdDestinatario>
+            <DomSist>MES02</DomSist>
+            <NUOp>12345678250908000000001</NUOp>
+        </BCMSG>
+        <SISMSG>
+            <SRC0001R1>
+                <CodMsg>SRC0001R1</CodMsg>
+                <NumCtrlIF>00001</NumCtrlIF>
+                <CNPJBaseEntRespons>12345678</CNPJBaseEntRespons>
+                <NumCtrlSRC>SRC20260811000000001</NumCtrlSRC>
+                <DtHrBC>2026-08-11T12:30:45</DtHrBC>
+                <DtMovto>2026-08-11</DtMovto>
+            </SRC0001R1>
+        </SISMSG>
+    </DOC>
+    """
+
+    src0001r1 = SRC0001R1.from_xml(xml)
+    assert src0001r1.product_permissions == []
 
 
 def test_src0001e_to_xml() -> None:

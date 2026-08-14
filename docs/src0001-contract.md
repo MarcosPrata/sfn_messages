@@ -36,7 +36,7 @@ Exemplo:
 | `institution_control_number` | `NumCtrlIF` | Eco do request |
 | `responsible_entity_base_cnpj` | `CNPJBaseEntRespons` | |
 | `src_control_number` | `NumCtrlSRC` | Controle SRC |
-| `product_permissions[]` | `Grupo_SRC0001R1_PermsProdt` | 1..n |
+| `product_permissions[]` | `Grupo_SRC0001R1_PermsProdt` | catálogo 1..n; parser aceita ausência (`[]`) |
 | `product_permissions[].protection_type` | `TpProtc` | `ACCOUNT_OPENING` / `OWNERSHIP_CHANGE` |
 | `product_permissions[].product_permission_indicator` | `IndrPermsProdt` | `ALLOWED` (`S`) / `NOT_ALLOWED` (`N`) |
 | `vendor_timestamp` | `DtHrBC` | |

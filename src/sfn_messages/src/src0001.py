@@ -1,6 +1,8 @@
 from datetime import date, datetime
 from typing import Annotated, ClassVar, Literal
 
+from pydantic import Field
+
 from sfn_messages.core.models import BaseMessage, BaseSubMessage, XmlPath
 from sfn_messages.core.types import Cnpj, Cpf, ErrorCode, InstitutionControlNumber, Ispb
 
@@ -41,7 +43,7 @@ class SRC0001R1(BaseMessage):
     institution_control_number: Annotated[InstitutionControlNumber, XmlPath(f'{PATH_R1}/NumCtrlIF/text()')]
     responsible_entity_base_cnpj: Annotated[Ispb, XmlPath(f'{PATH_R1}/CNPJBaseEntRespons/text()')]
     src_control_number: Annotated[SrcControlNumber, XmlPath(f'{PATH_R1}/NumCtrlSRC/text()')]
-    product_permissions: Annotated[list[ProductPermissionGroup], XmlPath(f'{PATH_R1}')]
+    product_permissions: Annotated[list[ProductPermissionGroup], XmlPath(f'{PATH_R1}')] = Field(default_factory=list)
     vendor_timestamp: Annotated[datetime, XmlPath(f'{PATH_R1}/DtHrBC/text()')]
     settlement_date: Annotated[date, XmlPath(f'{PATH_R1}/DtMovto/text()')]
 
